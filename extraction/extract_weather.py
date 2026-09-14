@@ -13,6 +13,7 @@ def build_url(lat,lon):
     return baseUrl + f"?latitude={lat}&longitude={lon}&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,wind_speed_10m_max,wind_gusts_10m_max,weather_code&timezone=auto&forecast_days=3"
 
 def main():
+    os.makedirs("bronze", exist_ok=True)
     df = readCSV("data/ma-cities.csv")
     for data in df.itertuples():
         print(f"extracting {data.city}....")
@@ -28,13 +29,15 @@ def main():
             "response" : response
         }
 
-        try: 
-            with open(f"bronze/{data.city}.json", "w") as f:
+        if " " in data.city:
+            city = data.city.replace(" ","_").lower()
+        else:
+            city = data.city.lower()
+
+        with open(f"bronze/{city}.json", "w") as f:
                 print(f"creating json file for  {data.city}....")
                 json.dump(payload,f)
-        except FileNotFoundError:
-            print("folder not exists\nCreating new one")
-            os.makedirs("bronze/")
+            
         
 
         print(f"Done {data.city}")
