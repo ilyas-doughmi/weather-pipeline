@@ -1,4 +1,4 @@
-city,lat,lng,country,iso2,admin_name,capital,population,population_proper
+city,lat,lon,country,iso2,admin_name,capital,population,population_proper
 Casablanca,33.5992,-7.6200,Morocco,MA,Casablanca-Settat,admin,3950000,3215935
 Tangier,35.7767,-5.8039,Morocco,MA,Tanger-Tétouan-Al Hoceïma,admin,1275428,1275428
 Fès,34.0433,-5.0033,Morocco,MA,Fès-Meknès,admin,1167842,1167842
