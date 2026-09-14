@@ -34,9 +34,9 @@ def main():
         else:
             city = data.city.lower()
 
-        with open(f"bronze/{city}.json", "w") as f:
+        with open(f"bronze/{city}.json", "w", encoding="utf-8") as f:
                 print(f"creating json file for  {data.city}....")
-                json.dump(payload,f)
+                json.dump(payload, f, ensure_ascii=False, indent=2)
             
         
 
