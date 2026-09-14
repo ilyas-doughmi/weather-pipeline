@@ -1,6 +1,8 @@
 import pandas as pd
 import json
 import requests as req
+from datetime import datetime
+import os
 
 def readCSV(path):
     df = pd.read_csv(path,encoding="utf-8")
@@ -22,12 +24,19 @@ def main():
             "city": data.city,
             "lat" : data.lat,
             "lon" : data.lon,
+            "timestamp" : datetime.now().isoformat(),
             "response" : response
         }
-    
-        with open(f"bronze/{data.city}.json", "w") as f:
-            print(f"creating json file for  {data.city}....")
-            json.dump(payload,f)
+
+        try: 
+            with open(f"bronze/{data.city}.json", "w") as f:
+                print(f"creating json file for  {data.city}....")
+                json.dump(payload,f)
+        except FileNotFoundError:
+            print("folder not exists\nCreating new one")
+            os.makedirs("bronze/")
+        
+
         print(f"Done {data.city}")
 
 if __name__ == "__main__":  
