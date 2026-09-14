@@ -16,31 +16,40 @@ def main():
     os.makedirs("bronze", exist_ok=True)
     df = readCSV("data/ma-cities.csv")
     for data in df.itertuples():
+        if " " in data.city:
+            city = data.city.replace(" ","_").lower()
+        else:
+            city = data.city.lower()
         print(f"extracting {data.city}....")
         lat,lon = data.lat,data.lon
         url = build_url(lat,lon)
-        response = req.get(url).json()
-
+        response = None
+        for tries in range(1,5):
+            try:    
+                response = req.get(url, timeout=10)
+                response.raise_for_status()
+                break
+            except req.exceptions.RequestException as e :
+                print(f"failed : {tries}/4 : failed:{e}")
+                if tries == 4:
+                    print(f"All retries failed for {data.city}")
+                    with open(f"bronze/{city}-failed.json","w", encoding="utf-8") as f:
+                        json.dump(str(e),f)
+        if response is None:
+            print(f"Skipping {data.city}")
+            continue
         payload = {
             "city": data.city,
             "lat" : data.lat,
             "lon" : data.lon,
             "fetched_at" : datetime.now().isoformat(),
-            "response" : response
+            "response" : response.json()
         }
-
-        if " " in data.city:
-            city = data.city.replace(" ","_").lower()
-        else:
-            city = data.city.lower()
-
         with open(f"bronze/{city}.json", "w", encoding="utf-8") as f:
-                print(f"creating json file for  {data.city}....")
-                json.dump(payload, f, ensure_ascii=False, indent=2)
-            
-        
-
+            print(f"creating json file for  {data.city}....")
+            json.dump(payload, f, ensure_ascii=False, indent=2)     
         print(f"Done {data.city}")
 
+    print("Done...")
 if __name__ == "__main__":  
     main()
