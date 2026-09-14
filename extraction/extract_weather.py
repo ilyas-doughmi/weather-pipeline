@@ -25,7 +25,7 @@ def main():
             "city": data.city,
             "lat" : data.lat,
             "lon" : data.lon,
-            "timestamp" : datetime.now().isoformat(),
+            "fetched_at" : datetime.now().isoformat(),
             "response" : response
         }
 
